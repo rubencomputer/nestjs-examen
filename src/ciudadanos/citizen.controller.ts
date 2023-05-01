@@ -53,7 +53,7 @@ export class CitizenController {
       citizenName,
       citizenCurp,
     );
-    return 'El usuario ha sido actualizado';
+    return { status: 'El usuario ha sido actualizado!' };
   }
 
   //Delete Citizen(DELETE)

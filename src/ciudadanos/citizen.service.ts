@@ -52,7 +52,16 @@ export class CitizensService {
     citizenName: string,
     citizenCurp: string,
   ) {
-    const updatedCitizen = await this.findCitizen(citizenId);
+    let updatedCitizen;
+    if (citizenId.length > 18) {
+      updatedCitizen = await this.citizenModel.findOneAndUpdate({
+        _id: citizenId,
+      });
+    } else {
+      updatedCitizen = await this.citizenModel.findOneAndUpdate({
+        curp: citizenId,
+      });
+    }
 
     if (citizenName) {
       updatedCitizen.name = citizenName;
@@ -80,13 +89,17 @@ export class CitizensService {
 
   //Single Citizen private function
   private async findCitizen(citizenId: string): Promise<Citizen> {
-    let citizenByCurp;
+    let citizen;
     try {
-      citizenByCurp = await this.citizenModel.find({ curp: citizenId });
+      if (citizenId.length > 18) {
+        citizen = await this.citizenModel.find({ _id: citizenId });
+      } else {
+        citizen = await this.citizenModel.find({ curp: citizenId });
+      }
     } catch (err) {
       throw new NotFoundException('El curp no existe.');
     }
 
-    return citizenByCurp;
+    return citizen;
   }
 }
